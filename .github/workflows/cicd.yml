@@ -1,23 +1,38 @@
-name: Production CI/CD Pipeline
+name: Production CT/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   code-quality:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Source Code
-      uses: actions/checkout@v4
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
 
-    - name: Set up Python Environment
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      - name: Set up Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-    - name: Run Static Code Inspection
-      run: |
-        echo "CI/CD Engine: Environment Staged. Pipeline completely active and free."
+      - name: Run Static Code Inspection
+        run: |
+          echo "CI/CD Environment Staged. Pipeline completely active and free."
+
+      - name: Run Python Lint & Format Check (Ruff)
+        run: |
+          pip install ruff
+          ruff check .
+          ruff format --check .
+
+      - name: Run Frontend Code Quality Check
+        uses: super-linter/super-linter/slim@v5
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_HTML: true
+          VALIDATE_CSS: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
