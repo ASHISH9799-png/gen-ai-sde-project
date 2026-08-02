@@ -1,0 +1,17 @@
+# Secret Environment Variables (API Keys, Database Passwords)
+.env
+*.env
+secrets.json
+
+# Local Python Isolation Environments
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.pyc
+
+# Local Development Operating System Clutter
+.DS_Store
+Thumbs.db
+.cursor/
