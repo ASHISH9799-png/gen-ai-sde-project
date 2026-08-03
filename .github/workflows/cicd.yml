@@ -31,6 +31,7 @@ jobs:
       - name: Run Frontend Code Quality Check
         uses: super-linter/super-linter/slim@v5
         env:
+          DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_HTML: true
