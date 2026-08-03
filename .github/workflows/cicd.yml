@@ -20,7 +20,7 @@ jobs:
 
       - name: Run Static Code Inspection
         run: |
-          echo "CI/CD Environment Staged. Pipeline completely active and free."
+          echo "CT/CD Environment Staged. Pipeline completely active and free."
 
       - name: Run Python Lint & Format Check (Ruff)
         run: |
@@ -37,3 +37,8 @@ jobs:
           VALIDATE_HTML: true
           VALIDATE_CSS: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Backend Dependencies & Run Bruno API Tests
+        run: |
+          pip install -r backend/requirements.txt pytest httpx
+          python -m pytest backend/tests/
