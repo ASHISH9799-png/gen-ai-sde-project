@@ -3,3 +3,4 @@ uvicorn==0.28.0
 python-dotenv==1.0.1
 pytest
 httpx
+chromadb==0.5.3
