@@ -1,8 +1,7 @@
+from app.vector_store import query_rules
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from app.vector_store import query_rules
-
 
 app = FastAPI(title="RBI Banking Law Compliance AI Agent")
 
@@ -65,5 +64,5 @@ def compliance_chat(payload: ChatRequest):
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Complaince database engine failure: {str(e)}"
+            status_code=500, detail=f"Complaince database engine failure: {e!s}"
         )
