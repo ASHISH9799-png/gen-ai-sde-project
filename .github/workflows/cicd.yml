@@ -40,5 +40,5 @@ jobs:
 
       - name: Install Backend Dependencies & Run Bruno API Tests
         run: |
-          pip install -r backend/requirements.txt pytest httpx
+          pip install -r backend/requirements.txt pytest "httpx<0.28.0"
           PYTHONPATH=backend python -m pytest backend/tests/tests_api.py
