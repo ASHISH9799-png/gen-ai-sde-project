@@ -1,19 +1,23 @@
-import os
 import contextlib
+import os
+
 import chromadb
 from chromadb.config import Settings
 
 
 # function to supress un silenceable third party print outputs
 def initialize_clean_client():
-    with open(os.devnull, "w") as devnull:
-        with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
-            client = chromadb.PersistentClient(
-                path="./rbi_vector_db", settings=Settings(anonymized_telemetry=False)
-            )
-            # this line is here to catch its background thread warning:
-            db_collection = client.get_or_create_collection(name="rbi_rules")
-            return client, db_collection
+    with (
+        open(os.devnull, "w") as devnull,
+        contextlib.redirect_stdout(devnull),
+        contextlib.redirect_stderr(devnull),
+    ):
+        client = chromadb.PersistentClient(
+            path="./rbi_vector_db", settings=Settings(anonymized_telemetry=False)
+        )
+        # this line is here to catch its background thread warning:
+        db_collection = client.get_or_create_collection(name="rbi_rules")
+        return client, db_collection
 
 
 # create your clean client instance
@@ -37,16 +41,10 @@ def query_rules(query_text: str, n_results: int = 1):
     return results
 
 
-def query_rules(user_query: str):
-    """Searches the database for the closest matching banking rule."""
-    results = collection.query(query_texts=[user_query], n_results=1)
-    return results
-
-
 # this block allws us to run this file directly to test it
 if __name__ == "__main__":
-    import os
     import contextlib
+    import os
 
     print("Initializing test database seed...")
 
