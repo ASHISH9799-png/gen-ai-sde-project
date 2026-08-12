@@ -12,9 +12,15 @@ def initialize_clean_client():
         contextlib.redirect_stdout(devnull),
         contextlib.redirect_stderr(devnull),
     ):
+        # Dynamically find the absolute directory path of this current file
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        backend_dir = os.path.dirname(current_dir)
+        db_path = os.path.join(backend_dir, "rbi_vector_db")
+
         client = chromadb.PersistentClient(
-            path="./rbi_vector_db", settings=Settings(anonymized_telemetry=False)
+            path=db_path, settings=Settings(anonymized_telemetry=False)
         )
+
         # this line is here to catch its background thread warning:
         db_collection = client.get_or_create_collection(name="rbi_rules")
         return client, db_collection

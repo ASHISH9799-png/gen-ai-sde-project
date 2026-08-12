@@ -1,12 +1,27 @@
-from app.vector_store import query_rules
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+from dotenv import load_dotenv
+from backend.app.vector_store import query_rules
+from google import genai
 
-app = FastAPI(title="RBI Banking Law Compliance AI Agent")
 
+# Load secrets from your .env file
+load_dotenv()
 
-# Configures security permissions so UI can talk to this API
+GEMINI_KEY = os.getenv("GEMINI_API_KEY")
+
+if not GEMINI_KEY:
+    raise RuntimeError("Missing GEMINI_API_KEY in .env")
+
+# Instantiate our persistent client exactly once globally at boot time
+client = genai.Client(api_key=GEMINI_KEY)
+
+app = FastAPI(title="NitiMitra AI: Compliance Agent")
+
+# Configure security permissions so UI can talk to this API backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,53 +31,62 @@ app.add_middleware(
 )
 
 
-# this defines the structural layout of data our API expects to recieve
+# Structure layout of data our API expects to receive
 class ChatRequest(BaseModel):
     question: str
 
 
 @app.get("/api/health")
-def health_check():
+def heatlth_check():
     return {"status": "active", "system": "RBI Compliance Core Ready"}
 
 
 @app.post("/api/chat")
-def compliance_chat(payload: ChatRequest):
+async def compliance_chat(payload: ChatRequest):
     if not payload.question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty")
 
     try:
-        # 1. query your database using the question sent by user
+        # 1. Query your database using the question sent by user
         search_results = query_rules(payload.question)
-
-        # 2. Extract the text chunks that matched
         documents = search_results.get("documents", [[]])
-        metadatas = search_results.get("metadatas", [[]])
 
         # Fallback check if nothing matched in the database
+        matched_text = "No direct matching circular found."
         if documents and len(documents[0]) > 0:
             matched_text = documents[0][0]
-            source_info = (
-                metadatas[0][0] if (metadatas and len(metadatas[0]) > 0) else {}
+
+        # 2. create the multi-agent auditor system prompt for NitiMitra Ai
+        auditor_prompt = f"""
+        You are an expert RBI Compliance Auditor assistant.
+        Evaluate the User Question strictly against the provided regulatory text, laws, policy, scheme rules.
+
+
+        CRITICAL LAWS:
+        - Answer using ONLY the facts inside the Context block below.
+        - if the context does not contain the answer, say 'Data not found'.
+        - Do not hallucinate or make up any sections, rules, laws, policy or scheme rules.
+
+        [Regulatory Context]
+        {matched_text}
+
+        [User Question]
+        {payload.question}
+        """
+
+        # 3. Define a generator function to yield tokens as they arrive from LLM
+        def response_generator():
+            # Use generate_content_stream instead of generate_content
+            response_stream = client.models.generate_content_stream(
+                model="gemini-3.6-flash",
+                contents=auditor_prompt,
             )
+            for chunk in response_stream:
+                if chunk.text:
+                    yield chunk.text  # Safely stream word tokens out to the client browser
 
-        else:
-            matched_text = "NO diect regulatory text found in vector database match."
-            source_info = {"doc_name": "N/A", "section": "N/A"}
+        # 4. Return a live streaming media connection channel instead of a rigid JSON object
+        return StreamingResponse(response_generator(), media_type="text/plain")
 
-        # 3. Return the real data back to the user
-        return {
-            "answer": matched_text,
-            "citations": [
-                {
-                    "source": source_info.get("doc_name", "RBI Database"),
-                    "section": source_info.get("section", "General Compliance"),
-                    "link": "https://rbi.org.in",
-                }
-            ],
-        }
-
-    except Exception as e:  # noqa: BLE001
-        raise HTTPException(
-            status_code=500, detail="Complaince database engine failure: " + str(e)
-        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
