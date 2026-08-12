@@ -51,15 +51,18 @@ if __name__ == "__main__":
     print("Initializing test database seed...")
 
     # silence the background collection worker threads during seeding
-    with open(os.devnull, "w") as devnull:
-        with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
-            # seeding one real RBI rule into our vector database
-            insert_rule(
-                text="All commercial banks must maintain a Cash Reserve Ratio (CRR) of 4.50 percent of thier Net Demand and Time Liabilities.",
-                doc_name="RBI Master Direction 2024",
-                section="Chapter II - CRR Obligations",
-                rule_id="rbi_crr_rule_01",
-            )
+    with (
+        open(os.devnull, "w") as devnull,
+        contextlib.redirect_stdout(devnull),
+        contextlib.redirect_stderr(devnull),
+    ):
+        # seeding one real RBI rule into our vector database
+        insert_rule(
+            text="All commercial banks must maintain a Cash Reserve Ratio (CRR) of 4.50 percent of thier Net Demand and Time Liabilities.",
+            doc_name="RBI Master Direction 2024",
+            section="Chapter II - CRR Obligations",
+            rule_id="rbi_crr_rule_01",
+        )
 
     print("Database seeded successfully!")
 
