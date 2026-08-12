@@ -62,7 +62,7 @@ def compliance_chat(payload: ChatRequest):
             ],
         }
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         raise HTTPException(
             status_code=500, detail="Complaince database engine failure: " + str(e)
         )
