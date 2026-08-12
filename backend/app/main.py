@@ -64,5 +64,5 @@ def compliance_chat(payload: ChatRequest):
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Complaince database engine failure: {e!s}"
+            status_code=500, detail="Complaince database engine failure: " + str(e)
         )
