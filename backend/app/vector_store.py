@@ -68,9 +68,12 @@ if __name__ == "__main__":
     search_query = "What is the requirement for the cash reserve ratio?"
 
     # function for muting unwanted telemetry event
-    with open(os.devnull, "w") as devnull:
-        with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
-            search_results = query_rules(search_query)
+    with (
+        open(os.devnull, "w") as devnull,
+        contextlib.redirect_stdout(devnull),
+        contextlib.redirect_stderr(devnull),
+    ):
+        search_results = query_rules(search_query)
 
     print("\n--- [SEARCH RESULT MATCH] ---")
     print(search_results["documents"][0][0])
