@@ -8,9 +8,9 @@ http:
   url: http://127.0.0.1:8000/api/chat
   body:
     type: json
-    data: |-
+    data: |
       {
-        "question": "What is the priority sector lending target for banks?"
+        "question": "What does the master circular say about compliance requirements?"
       }
   auth: inherit
 

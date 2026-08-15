@@ -1,12 +1,13 @@
 import os
+
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
-from dotenv import load_dotenv
-from backend.app.vector_store import query_rules
 from google import genai
+from pydantic import BaseModel
 
+from backend.app.vector_store import query_rules
 
 # Load secrets from your .env file
 load_dotenv()

@@ -1,8 +1,8 @@
 import os
-from pypdf import PdfReader
 
 # Import your insert function from your existing vector_store.py script
 from app.vector_store import insert_rule
+from pypdf import PdfReader
 
 
 def extract_and_chunk_pdf(
