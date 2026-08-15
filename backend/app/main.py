@@ -88,5 +88,5 @@ async def compliance_chat(payload: ChatRequest):
         # 4. Return a live streaming media connection channel instead of a rigid JSON object
         return StreamingResponse(response_generator(), media_type="text/plain")
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=str(e))
