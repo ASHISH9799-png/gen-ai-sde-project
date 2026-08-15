@@ -1,6 +1,6 @@
 # 🏦 RBI Banking Law Compliance & Loan Audit AI Agent
 
-An enterprise-grade compliance advisor and interactive document analyzer. This system cross-verifies financial parameters, banking terms, and internal policies against live Reserve Bank of India (RBI) master circular criteria to automate risk auditing for self basic self knowledge of financial literacy among common indian citizens.
+An enterprise-grade compliance advisor and interactive document analyzer. This system cross-verifies financial parameters, banking terms, and internal policies against live Reserve Bank of India (RBI) master circular criteria to automate risk auditing for basic self knowledge of financial literacy among common indian citizens.
 
 ---
 
