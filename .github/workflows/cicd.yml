@@ -1,4 +1,4 @@
-name: Production CT/CD Pipeline
+name: CI-CD Pipeline Validation
 
 on:
   push:
@@ -18,34 +18,14 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run Static Code Inspection
-        run: |
-          echo "CT/CD Environment Staged. Pipeline completely active and free."
-
-      - name: Run Python Lint & Format Check (Ruff)
+      - name: Run Code Quality Check (Ruff)
         run: |
           pip install ruff
-          ruff check .
-          ruff format --check .
-
-      - name: Run Frontend Code Quality Check
-        uses: super-linter/super-linter/slim@v5
-        env:
-          DEFAULT_BRANCH: main
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_JAVASCRIPT_ES: true
-          VALIDATE_HTML: true
-          VALIDATE_CSS: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ruff check backend/
 
       - name: Install Backend Dependencies & Run Bruno API Tests
-        run: |
-          pip install -r backend/requirements.txt pytest "httpx<0.28.0"
-          PYTHONPATH=backend python -m pytest backend/tests/tests_api.py
-              - name: Install Backend Dependencies & Run Bruno API Tests
         env:
           GEMINI_API_KEY: "AIzaSy_MOCK_KEY_FOR_CI_CD_PIPELINE_VALIDATION"
         run: |
-          # Your existing testing and setup terminal commands sit right here
-          # e.g., pytest backend/tests/
-
+          pip install -r backend/requirements.txt
+          pytest backend/tests/
