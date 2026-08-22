@@ -1,17 +1,24 @@
-# Secret Environment Variables (API Keys, Database Passwords)
+# 🔑 Secret Environment Variables & Credentials
 .env
 *.env
 secrets.json
 
-# Local Python Isolation Environments
+# 🐳 Docker Volumetric Storage Caches
+.docker/
+redis-data/
+
+# 🐍 Python Isolation Environments & Compilations
 .venv/
 venv/
-ENV/
 env/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
 
-# Local Development Operating System Clutter
+# 💻 Local Operating System Clutter
 .DS_Store
 Thumbs.db
 .cursor/
