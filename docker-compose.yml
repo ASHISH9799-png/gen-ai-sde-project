@@ -9,19 +9,16 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-    depends_on:
-      - redis-server
     env_file:
       - .env
     environment:
-      - REDIS_URL=redis://redis-server:6379/0
+      - ENV=development
 
-  redis-server:
-    image: redis/redis-stack-server:latest
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - "6379:6379"
+      - "3000:3000"
     volumes:
-      - redis-data:/data
-
-volumes:
-  redis-data:
+      - ./frontend:/usr/share/nginx/html
