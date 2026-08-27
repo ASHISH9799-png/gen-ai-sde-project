@@ -1,6 +1,18 @@
+# Stage 1: Build the TypeScript source code into standard static files
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+# Stage 2: Serve the final static files using an ultra-light Nginx web server
 FROM nginx:alpine
 
-COPY . /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
